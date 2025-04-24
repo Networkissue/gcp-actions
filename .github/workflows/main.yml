@@ -96,7 +96,7 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: '${{ secrets.GCP_PROJECT_ID }}'
+          project_id: 'test-dev-4321'
 
       # Step 4: Deploy Application using appdeployer.sh script
       - name: Deploy Application
@@ -108,5 +108,5 @@ jobs:
       - name: Deploy to App Engine
         uses: google-github-actions/deploy-appengine@v2
         with:
-          credentials_json: '{{ env.PROJECT_DEV }}'  # optionally map project_id by env
+          project_id: 'test-dev-4321'  # optionally map project_id by env
           deliverables: app.yaml
