@@ -1,47 +1,49 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Deploy to GAE
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   deploy:
     name: Deploying to Google Cloud
     runs-on: ubuntu-latest
-    
+    permissions:
+      id-token: write  # This grants permission to request the OIDC token
+      contents: read   # This is needed for actions/checkout
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Login to GCP
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        credentials: ${{ secrets.GCP_DEV_KEY }}
-        project_id: ${{ secrets.PROJECT_DEV }} 
-        
-      
+      # Step 1: Authenticate to Google Cloud using the service account key
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_DEV_KEY }}  # Service account key from GitHub secrets
 
-    - name: Deploy to App Engine
-      id: deploy
-      uses: google-github-actions/deploy-appengine@v0.2.0
-      with:
-        deliverables: app.yaml
-        version: v1
-        project_id: ${{ secrets.PROJECT_DEV }}
-        
+      # Step 2: Set up Google Cloud SDK
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.PROJECT_DEV }}  # Set the project ID from GitHub secrets
 
-    - name: Test
-      run: curl "${{ steps.deploy.outputs.url }}"
+      # Step 3: Deploy to App Engine
+      - name: Deploy to App Engine
+        id: deploy
+        uses: google-github-actions/deploy-appengine@v2
+        with:
+          deliverables: app.yaml
+          version: v1
+          project_id: ${{ secrets.PROJECT_DEV }}
+
+      # Step 4: Test the deployed application
+      - name: Test deployed application
+        run: curl "${{ steps.deploy.outputs.url }}"
+
 
 # name: Deploy to Google Cloud
 
