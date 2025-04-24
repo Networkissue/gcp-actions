@@ -10,8 +10,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write  # This grants permission to request the OIDC token
-      contents: read   # This is needed for actions/checkout to work
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -22,11 +22,18 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          # Reference your Workload Identity Federation provider
+          # Workload Identity Federation provider
           workload_identity_provider: 'principal://iam.googleapis.com/projects/224648525657/locations/global/workloadIdentityPools/wif-provider-name/subject/SUBJECT_ATTRIBUTE_VALUE'
-          # The IAM Principal should match the subject claim in the OIDC token
           service_account: 'test-dev-4321@test-dev-4321.iam.gserviceaccount.com'
-          
+          create_credentials_file: true
+          export_environment_variables: true
+          universe: googleapis.com
+          cleanup_credentials: true
+          access_token_lifetime: 3600s
+          access_token_scopes: https://www.googleapis.com/auth/cloud-platform
+          id_token_include_email: false
+          audience: "//iam.googleapis.com/projects/224648525657/locations/global/workloadIdentityPools/wif-provider-name/providers/wif-provider-name"
+
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
@@ -52,6 +59,7 @@ jobs:
         with:
           project_id: test-dev-4321
           deliverables: app.yaml
+
 
 
 
