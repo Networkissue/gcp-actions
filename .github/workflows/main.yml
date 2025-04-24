@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     env:
-      GCP_DEV_KEY_VAR: ${{ secrets.GCP_DEV_KEY }}  # Set the environment variable for the service account key
-      PROJECT_DEV: ${{ secrets.PROJECT_DEV }}  # Set the environment variable for the project ID
+      GCP_DEV_KEY_VAR: ${{ secrets.GCP_DEV_KEY }}  # Service account key secret injected into environment variable
+      PROJECT_DEV: ${{ secrets.PROJECT_DEV }}  # Project ID secret injected into environment variable
 
     steps:
       - name: Checkout repository
@@ -23,12 +23,12 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ env.GCP_DEV_KEY_VAR }}  # Use the service account key from the environment variable
+          credentials_json: ${{ env.GCP_DEV_KEY_VAR }}  # Use service account key stored in the environment variable
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ env.PROJECT_DEV }}  # Use the project ID from the environment variable
+          project_id: ${{ env.PROJECT_DEV }}  # Use project ID from the environment variable
 
       - name: Install dependencies for my-react-app-portal
         run: |
