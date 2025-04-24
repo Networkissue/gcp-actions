@@ -48,7 +48,7 @@ jobs:
           TIMESTAMP=$(date -u +%Y%m%dT%H%M%S)
           NEW_VERSION="${VERSION%%+*}+$TIMESTAMP"
           node -e "let p=require('./package.json'); p.version='$NEW_VERSION'; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2))"
-          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
       - name: Update version with timestamp for my-node-app-service
         id: versioning-node-service
