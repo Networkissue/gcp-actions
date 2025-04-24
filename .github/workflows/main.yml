@@ -28,11 +28,20 @@ jobs:
       #     project_id: ${{ secrets.PROJECT_DEV }}
       #     credentials: ${{ secrets.GCP_DEV_KEY }}
 
-      - name: Authenticate to Google Cloud
+      # - name: Authenticate to Google Cloud
+      #   uses: google-github-actions/auth@v2
+      #   with:
+      #     credentials_json: '${{ env.GCP_DEV_KEY_VAR }}'  # Use the service account key from the environment variable
+      # Authenticate to Google Cloud using Workload Identity Federation
+      - name: Authenticate to Google Cloud using Workload Identity Federation
+        id: auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ env.GCP_DEV_KEY_VAR }}'  # Use the service account key from the environment variable
-
+          # Reference your Workload Identity Federation provider
+          workload_identity_provider: 'projects/224648525657/locations/global/workloadIdentityPools/wif-provider-name/providers/my-provider'
+          # The IAM Principal should match the subject claim in the OIDC token
+          service_account: 'test-dev-4321@test-dev-4321.iam.gserviceaccount.com'
+          
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
