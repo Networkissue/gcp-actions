@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     env:
-      GCP_DEV_KEY_VAR: ${{ secrets.GCP_DEV_KEY }}  # Service account key secret injected into environment variable
-      PROJECT_DEV: ${{ secrets.PROJECT_DEV }}  # Project ID secret injected into environment variable
+      GCP_DEV_KEY_VAR: ${{ secrets.GCP_DEV_KEY }}  # Inject secret into environment variable
+      PROJECT_DEV: ${{ secrets.PROJECT_DEV }}  # Inject project ID secret into environment variable
 
     steps:
       - name: Checkout repository
@@ -23,12 +23,12 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ env.GCP_DEV_KEY_VAR }}  # Use service account key stored in the environment variable
+          credentials_json: ${{ env.GCP_DEV_KEY_VAR }}  # Use the service account key from the environment variable
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ env.PROJECT_DEV }}  # Use project ID from the environment variable
+          project_id: ${{ env.PROJECT_DEV }}  # Use the project ID from the environment variable
 
       - name: Install dependencies for my-react-app-portal
         run: |
@@ -39,26 +39,6 @@ jobs:
         run: |
           cd ./my-node-app-service
           npm install
-
-      - name: Update version with timestamp for my-react-app-portal
-        id: versioning-react-portal
-        run: |
-          cd my-react-app-portal
-          VERSION=$(node -p "require('./package.json').version")
-          TIMESTAMP=$(date -u +%Y%m%dT%H%M%S)
-          NEW_VERSION="${VERSION%%+*}+$TIMESTAMP"
-          node -e "let p=require('./package.json'); p.version='$NEW_VERSION'; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2))"
-          echo "New_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-
-      - name: Update version with timestamp for my-node-app-service
-        id: versioning-node-service
-        run: |
-          cd my-node-app-service
-          VERSION=$(node -p "require('./package.json').version")
-          TIMESTAMP=$(date -u +%Y%m%dT%H%M%S)
-          NEW_VERSION="${VERSION%%+*}+$TIMESTAMP"
-          node -e "let p=require('./package.json'); p.version='$NEW_VERSION'; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2))"
-          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
       - name: Deploy Application
         run: |
