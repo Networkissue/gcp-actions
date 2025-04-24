@@ -1,4 +1,4 @@
-name: Deploy to App Engine
+name: Deploy to Google Cloud
 
 on:
   workflow_dispatch:
@@ -11,74 +11,46 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}  # This links to GitHub Environment (Settings > Environments) && dynamically changes the environments.
+    environment: ${{ inputs.environment }}
+    env:
+      GCP_DEV_KEY_VAR: ${{ secrets.GCP_DEV_KEY }}  # Set the environment variable for the service account key
+      PROJECT_DEV: ${{ secrets.PROJECT_DEV }}  # Set the environment variable for the project ID
 
     steps:
-      - name: Checkout or create dev branch
-        run: |
-          git init
-          git remote add origin https://github.com/${{ github.repository }}.git
-          git fetch origin
-      
-          if git ls-remote --exit-code --heads origin dev; then
-            echo "Branch 'dev' exists. Checking it out..."
-            git checkout dev
-          else
-            echo "Branch 'dev' does not exist. Creating it..."
-            git checkout -b dev
-            git pull origin main --no-rebase   # Ensure content is pulled into dev branch
-            
-            if [ -z "$(git status --porcelain)" ]; then  # Check if working directory is clean
-              echo "# Dev branch initialized" >> README.md
-              git add README.md
-              git commit -m "chore: initialize dev branch"
-            fi
-            
-            git push origin dev
-          fi
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-
-      - name: Configure Git identity
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Merge origin/main into dev
-        run: |
-          git fetch origin main
-          git merge origin/main --no-edit || echo "Merge skipped or completed with conflicts"
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
-          node-version: '20'
+          credentials_json: ${{ env.GCP_DEV_KEY_VAR }}  # Use the service account key from the environment variable
 
-      # - name: Install Dependencies
-      #   run: npm install
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_DEV }}  # Use the project ID from the environment variable
+
       - name: Install dependencies for my-react-app-portal
         run: |
-          cd ./my-react-app-portal  # navigate to the directory
-          ls -alh  # List files to ensure package.json exists
-          npm install
-    
-      - name: Install dependencies for my-node-app-service
-        run: |
-          cd ./my-node-app-service  # navigate to the directory
-          ls -alh  # List files to ensure package.json exists
+          cd ./my-react-app-portal
           npm install
 
+      - name: Install dependencies for my-node-app-service
+        run: |
+          cd ./my-node-app-service
+          npm install
 
       - name: Update version with timestamp for my-react-app-portal
         id: versioning-react-portal
         run: |
-          cd my-react-app-portal  # navigate to the correct directory
+          cd my-react-app-portal
           VERSION=$(node -p "require('./package.json').version")
           TIMESTAMP=$(date -u +%Y%m%dT%H%M%S)
           NEW_VERSION="${VERSION%%+*}+$TIMESTAMP"
           node -e "let p=require('./package.json'); p.version='$NEW_VERSION'; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2))"
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          
-      - name: Update version with timestamp for my-react-app-portal
+
+      - name: Update version with timestamp for my-node-app-service
         id: versioning-node-service
         run: |
           cd my-node-app-service
@@ -88,26 +60,13 @@ jobs:
           node -e "let p=require('./package.json'); p.version='$NEW_VERSION'; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2))"
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          # credentials_json: '${{ secrets.GCP_DEV_KEY }}'  # Comes from GitHub Environment (dev, qa)
-            credentials_json: ${{ env.GCP_DEV_KEY_VAR }}
-            
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: 'test-dev-4321'
-
-      # Step 4: Deploy Application using appdeployer.sh script
       - name: Deploy Application
         run: |
-          chmod +x ./Installer/dev/appdeployerdev.sh  # Ensure script is executable
-          ./Installer/dev/appdeployerdev.sh -v ${{ steps.versioning-react-portal.outputs.new_version }} -s "all"  # Pass the version from previous steps
-
+          chmod +x ./Installer/dev/appdeployerdev.sh
+          ./Installer/dev/appdeployerdev.sh -v ${{ steps.versioning-react-portal.outputs.new_version }} -s "all"
 
       - name: Deploy to App Engine
         uses: google-github-actions/deploy-appengine@v2
         with:
-          project_id: 'test-dev-4321'  # optionally map project_id by env
+          project_id: ${{ env.PROJECT_DEV }}  # Pass the project ID from the environment variable
           deliverables: app.yaml
