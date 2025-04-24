@@ -32,7 +32,9 @@ jobs:
           access_token_lifetime: 3600s
           access_token_scopes: https://www.googleapis.com/auth/cloud-platform
           id_token_include_email: false
-          audience: "//iam.googleapis.com/projects/224648525657/locations/global/workloadIdentityPools/wif-provider-name/providers/wif-provider-name"
+          # Correct audience format (full resource name of the provider)
+          audience: "https://iam.googleapis.com/projects/224648525657/locations/global/workloadIdentityPools/wif-provider-name/providers/github-actions-oidc"
+
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
