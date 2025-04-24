@@ -93,11 +93,10 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCP_DEV_KEY }}'  # Comes from GitHub Environment (dev, qa)
       
-      # Step 3: Set up Google Cloud SDK
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          credentials_json: '{{ env.PROJECT_DEV }}'  # Make sure to specify your project ID here
+          project_id: '${{ secrets.GCP_PROJECT_ID }}'
 
       # Step 4: Deploy Application using appdeployer.sh script
       - name: Deploy Application
