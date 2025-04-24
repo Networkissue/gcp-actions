@@ -1,68 +1,105 @@
-name: Deploy to Google Cloud
+# This is a basic workflow to help you get started with Actions
 
+name: Deploy to GAE
+
+# Controls when the workflow will run
 on:
+  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   deploy:
+    name: Deploying to Google Cloud
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write  # This grants permission to request the OIDC token
-      contents: read   # This is needed for actions/checkout
-
+    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
-      # Authenticate to Google Cloud using Workload Identity Federation
-      - name: Authenticate to Google Cloud using Workload Identity Federation
-        id: auth
-        uses: google-github-actions/auth@v2
-        with:
-          # Full Workload Identity Federation provider URL
-          workload_identity_provider: 'principal://iam.googleapis.com/projects/224648525657/locations/global/workloadIdentityPools/wif-provider-name/subject/SUBJECT_ATTRIBUTE_VALUE'
+    - name: Deploy to App Engine
+      id: deploy
+      uses: google-github-actions/deploy-appengine@v0.2.0
+      with:
+        deliverables: app.yaml
+        version: v1
+        project_id: ${{ secrets.PROJECT_DEV }}
+        credentials: ${{ secrets.GCP_DEV_KEY }}
+
+    - name: Test
+      run: curl "${{ steps.deploy.outputs.url }}"
+
+# name: Deploy to Google Cloud
+
+# on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       id-token: write  # This grants permission to request the OIDC token
+#       contents: read   # This is needed for actions/checkout
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+
+#       # Authenticate to Google Cloud using Workload Identity Federation
+#       - name: Authenticate to Google Cloud using Workload Identity Federation
+#         id: auth
+#         uses: google-github-actions/auth@v2
+#         with:
+#           # Full Workload Identity Federation provider URL
+#           workload_identity_provider: 'principal://iam.googleapis.com/projects/224648525657/locations/global/workloadIdentityPools/wif-provider-name/subject/SUBJECT_ATTRIBUTE_VALUE'
           
-          # The service account to impersonate (ensure the correct permissions are set)
-          service_account: 'test-dev-4321@test-dev-4321.iam.gserviceaccount.com'
-          create_credentials_file: true
-          export_environment_variables: true
-          universe: googleapis.com
-          cleanup_credentials: true
-          access_token_lifetime: 3600s
-          access_token_scopes: https://www.googleapis.com/auth/cloud-platform
-          id_token_include_email: false
+#           # The service account to impersonate (ensure the correct permissions are set)
+#           service_account: 'test-dev-4321@test-dev-4321.iam.gserviceaccount.com'
+#           create_credentials_file: true
+#           export_environment_variables: true
+#           universe: googleapis.com
+#           cleanup_credentials: true
+#           access_token_lifetime: 3600s
+#           access_token_scopes: https://www.googleapis.com/auth/cloud-platform
+#           id_token_include_email: false
           
-          # Correct audience format
-          audience: "//iam.googleapis.com/projects/224648525657/locations/global/workloadIdentityPools/wif-provider-name/providers/github-actions-provider"
+#           # Correct audience format
+#           audience: "//iam.googleapis.com/projects/224648525657/locations/global/workloadIdentityPools/wif-provider-name/providers/github-actions-provider"
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: test-dev-4321
+#       - name: Set up Google Cloud SDK
+#         uses: google-github-actions/setup-gcloud@v2
+#         with:
+#           project_id: test-dev-4321
 
-      - name: Install dependencies for my-react-app-portal
-        run: |
-          cd ./my-react-app-portal
-          npm install
+#       - name: Install dependencies for my-react-app-portal
+#         run: |
+#           cd ./my-react-app-portal
+#           npm install
 
-      - name: Install dependencies for my-node-app-service
-        run: |
-          cd ./my-node-app-service
-          npm install
+#       - name: Install dependencies for my-node-app-service
+#         run: |
+#           cd ./my-node-app-service
+#           npm install
 
-      - name: Deploy Application
-        run: |
-          chmod +x ./Installer/dev/appdeployerdev.sh
-          ./Installer/dev/appdeployerdev.sh -v ${{ steps.versioning-react-portal.outputs.new_version }} -s "all"
+#       - name: Deploy Application
+#         run: |
+#           chmod +x ./Installer/dev/appdeployerdev.sh
+#           ./Installer/dev/appdeployerdev.sh -v ${{ steps.versioning-react-portal.outputs.new_version }} -s "all"
 
-      - name: Deploy to App Engine
-        uses: google-github-actions/deploy-appengine@v2
-        with:
-          project_id: test-dev-4321
-          deliverables: app.yaml
+#       - name: Deploy to App Engine
+#         uses: google-github-actions/deploy-appengine@v2
+#         with:
+#           project_id: test-dev-4321
+#           deliverables: app.yaml
 
 
 
