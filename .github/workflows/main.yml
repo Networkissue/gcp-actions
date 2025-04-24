@@ -25,7 +25,7 @@ jobs:
           credentials_json: '${{ secrets.GCP_DEV_KEY }}'
       
       - name: Set GCP Project
-        run: gcloud config set project stemi-dev-444316
+        run: gcloud config set project test-dev-4321
       
       - name: Deploy to App Engine
         run: |
