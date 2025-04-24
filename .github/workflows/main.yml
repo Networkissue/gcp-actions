@@ -20,6 +20,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      # - name: Deploy to App Engine
+      #   id: deploy
+      #   uses: google-github-actions/deploy-appengine@v0.2.0
+      #   with:
+      #     deliverables: app.yaml
+      #     project_id: ${{ secrets.PROJECT_DEV }}
+      #     credentials: ${{ secrets.GCP_DEV_KEY }}
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
