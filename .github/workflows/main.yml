@@ -23,6 +23,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Login to GCP
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        credentials: ${{ secrets.GCP_DEV_KEY }}
+        project_id: ${{ secrets.PROJECT_DEV }} 
+        
+      
+
     - name: Deploy to App Engine
       id: deploy
       uses: google-github-actions/deploy-appengine@v0.2.0
@@ -30,7 +38,7 @@ jobs:
         deliverables: app.yaml
         version: v1
         project_id: ${{ secrets.PROJECT_DEV }}
-        credentials: ${{ secrets.GCP_DEV_KEY }}
+        
 
     - name: Test
       run: curl "${{ steps.deploy.outputs.url }}"
