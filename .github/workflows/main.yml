@@ -11,9 +11,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: '${{ inputs.environment }}'
-    env:
-      PROJECT_DEV: '${{ secrets.PROJECT_DEV }}'  # Inject project ID secret into environment variable
+    # environment: '${{ inputs.environment }}'
+    # env:
+      # PROJECT_DEV: '${{ secrets.PROJECT_DEV }}'  # Inject project ID secret into environment variable
 
     steps:
       - name: Checkout repository
@@ -32,7 +32,8 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: '${{ env.PROJECT_DEV }}'
+          # project_id: '${{ env.PROJECT_DEV }}'
+          project_id : test-dev-4321
 
       - name: Install dependencies for my-react-app-portal
         run: |
@@ -52,7 +53,8 @@ jobs:
       - name: Deploy to App Engine
         uses: google-github-actions/deploy-appengine@v2
         with:
-          project_id: '${{ env.PROJECT_DEV }}'
+          # project_id: '${{ env.PROJECT_DEV }}'
+          project_id : test-dev-4321
           deliverables: app.yaml
 
 
