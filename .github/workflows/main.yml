@@ -97,7 +97,7 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: test-dev-4321  # Make sure to specify your project ID here
+          project_id: '{{ env.PROJECT_DEV }}'  # Make sure to specify your project ID here
 
       # Step 4: Deploy Application using appdeployer.sh script
       - name: Deploy Application
