@@ -1,15 +1,6 @@
 name: Deploy to Google Cloud
 
-# on:
-#   workflow_dispatch:
-#     inputs:
-#       environment:
-#         description: 'Environment to deploy (e.g., dev, qa)'
-#         required: true
-#         default: 'dev'
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
   pull_request:
@@ -18,15 +9,15 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # environment: '${{ inputs.environment }}'
-    # env:
-      # PROJECT_DEV: '${{ secrets.PROJECT_DEV }}'  # Inject project ID secret into environment variable
+    permissions:
+      id-token: write  # This grants permission to request the OIDC token
+      contents: read   # This is needed for actions/checkout to work
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Authenticate to Google Cloud using Workload Identity Federation (ensure this step works alone)
+      # Authenticate to Google Cloud using Workload Identity Federation
       - name: Authenticate to Google Cloud using Workload Identity Federation
         id: auth
         uses: google-github-actions/auth@v2
@@ -39,8 +30,7 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          # project_id: '${{ env.PROJECT_DEV }}'
-          project_id : test-dev-4321
+          project_id: test-dev-4321
 
       - name: Install dependencies for my-react-app-portal
         run: |
@@ -60,9 +50,9 @@ jobs:
       - name: Deploy to App Engine
         uses: google-github-actions/deploy-appengine@v2
         with:
-          # project_id: '${{ env.PROJECT_DEV }}'
-          project_id : test-dev-4321
+          project_id: test-dev-4321
           deliverables: app.yaml
+
 
 
 
