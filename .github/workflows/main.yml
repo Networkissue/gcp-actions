@@ -1,12 +1,19 @@
 name: Deploy to Google Cloud
 
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       environment:
+#         description: 'Environment to deploy (e.g., dev, qa)'
+#         required: true
+#         default: 'dev'
+# Controls when the workflow will run
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy (e.g., dev, qa)'
-        required: true
-        default: 'dev'
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   deploy:
