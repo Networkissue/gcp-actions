@@ -1,0 +1,112 @@
+name: Deploy to App Engine
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy (e.g., dev, qa)'
+        required: true
+        default: 'dev'
+
+      services:
+        description: 'Services to deploy (e.g., all, my-test-portal, my-test-service)'
+        required: true
+        default: 'all'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout dev branch
+        uses: actions/checkout@v3
+        with:
+          ref: dev
+          fetch-depth: 0  # Important: fetch full history to allow merging
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Pull latest from origin/main and merge into dev
+        run: |
+          git fetch origin main
+          git merge origin/main --no-edit || echo "Merge completed with conflicts or no changes"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Pull latest code (safe fetch)
+        run: git pull origin dev
+
+      - name: Install Dependencies
+        run: |
+          cd ./my-node-app-service/
+          npm install
+          cd ./my-react-app-service/
+          npm install
+
+      - name: Update version with version change
+        id: versioning
+        run: |
+          cd ./my-node-app-service/
+          ./appdeployerdev.sh
+          
+
+      # Run the deploy shell script based on the environment (dev or qa)
+      - name: Run deploy shell script for dev environment
+        if: ${{ github.event.inputs.environment == 'dev' }}
+        run: |
+          cd ./Installer/dev
+          ./deploy-dev-portal.sh  # Deploy the dev portal
+          ./deploy-dev-service.sh  # Deploy the dev service
+
+      - name: Run deploy shell script for qa environment
+        if: ${{ github.event.inputs.environment == 'qa' }}
+        run: |
+          cd ./Installer/qa
+          ./appdeployerqa  # Deploy the qa 
+      # Authenticate for Dev Environment
+      - name: Authenticate to Google Cloud (Dev)
+        if: ${{ github.event.inputs.environment == 'dev' }}
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.DEV_KEY }}'  # Service account key for test-dev-4321
+
+      # Authenticate for QA Environment
+      - name: Authenticate to Google Cloud (QA)
+        if: ${{ github.event.inputs.environment == 'qa' }}
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.QA_KEY }}'  # Service account key for test-qa-4321
+
+      # Set GCP Project for Dev
+      - name: Set GCP Project (Dev)
+        if: ${{ github.event.inputs.environment == 'dev' }}
+        run: |
+          echo "Setting GCP project to test-dev-4321"
+          gcloud config set project '${{ secrets.DEV_ID }}'
+
+      # Set GCP Project for QA
+      - name: Set GCP Project (QA)
+        if: ${{ github.event.inputs.environment == 'qa' }}
+        run: |
+          echo "Setting GCP project to test-qa-4321"
+          gcloud config set project '${{ secrets.QA_ID }}'
+
+      - name: Deploy to App Engine (Dev)
+        if: ${{ github.event.inputs.environment == 'dev' }}
+        uses: google-github-actions/deploy-appengine@v0.2.0
+        with:
+          deliverables: ./my-node-app-service/app.yaml
+          project_id: '${{ secrets.DEV_ID }}'  # Use dev project ID secret
+
+      - name: Deploy to App Engine (QA)
+        if: ${{ github.event.inputs.environment == 'qa' }}
+        uses: google-github-actions/deploy-appengine@v0.2.0
+        with:
+          deliverables: ./my-node-app-service/app.yaml
+          project_id: '${{ secrets.QA_ID }}'  # Use qa project ID secret
