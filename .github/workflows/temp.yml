@@ -46,6 +46,7 @@ jobs:
         run: |
           cd ./my-node-app-service/
           npm install
+          echo ${pwd}
           cd ./my-react-app-portal/
           npm install
 
