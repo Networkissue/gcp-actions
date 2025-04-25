@@ -46,7 +46,7 @@ jobs:
         run: |
           cd ./my-node-app-service/
           npm install
-          cd ./my-react-app-service/
+          cd ./my-react-app-portal/
           npm install
 
       - name: Update version with version change
