@@ -74,14 +74,14 @@ jobs:
         if: ${{ github.event.inputs.environment == 'dev' }}
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.DEV_KEY }}'  # Service account key for test-dev-4321
+          project_key: '${{ secrets.DEV_KEY }}'  # Service account key for test-dev-4321
 
       # Authenticate for QA Environment
       - name: Authenticate to Google Cloud (QA)
         if: ${{ github.event.inputs.environment == 'qa' }}
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.QA_KEY }}'  # Service account key for test-qa-4321
+          project_key: '${{ secrets.QA_KEY }}'  # Service account key for test-qa-4321
 
       # Set GCP Project for Dev
       - name: Set GCP Project (Dev)
