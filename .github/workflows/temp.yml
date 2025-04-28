@@ -83,7 +83,9 @@ jobs:
       - name: Run deploy shell script for qa environment
         if: ${{ github.event.inputs.environment == 'qa' }}
         run: |
+          echo "Before: $(pwd)"
           cd ./Installer/qa
+          echo "After: $(pwd)"
           ./appdeployerqa  # Deploy the qa 
       # # Authenticate for Dev Environment
       # - name: Authenticate to Google Cloud (Dev)
