@@ -132,8 +132,22 @@ jobs:
       #   with:
       #     deliverables: ./my-node-app-service/app.yaml
       #     project_id: '${{ secrets.DEV_ID }}'  # Use dev project ID secret
-      
       # Deploy to App Engine (Dev)
+      - name: Deploy to App Engine (Dev - React Portal)
+        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'all' }}
+        uses: google-github-actions/deploy-appengine@v0.2.0
+        with:
+          deliverables: ./my-react-app-portal/app.yaml
+          project_id: '${{ secrets.DEV_ID }}'  # Use dev project ID secret
+    
+      - name: Deploy to App Engine (Dev - Node Service)
+        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'all' }}
+        uses: google-github-actions/deploy-appengine@v0.2.0
+        with:
+          deliverables: ./my-node-app-service/app.yaml
+          project_id: '${{ secrets.DEV_ID }}'  # Use dev project ID secret
+
+
       - name: Deploy to App Engine (Dev)
         if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-test-portal' }}
         uses: google-github-actions/deploy-appengine@v0.2.0
@@ -157,6 +171,20 @@ jobs:
       #     project_id: '${{ secrets.QA_ID }}'  # Use qa project ID secret
 
       # Deploy to App Engine (QA)
+      - name: Deploy to App Engine (QA - React Portal)
+        if: ${{ github.event.inputs.environment == 'qa' && github.event.inputs.services == 'all' }}
+        uses: google-github-actions/deploy-appengine@v0.2.0
+        with:
+          deliverables: ./my-react-app-portal/app.yaml
+          project_id: '${{ secrets.QA_ID }}'  # Use dev project ID secret
+    
+      - name: Deploy to App Engine (QA - Node Service)
+        if: ${{ github.event.inputs.environment == 'qa' && github.event.inputs.services == 'all' }}
+        uses: google-github-actions/deploy-appengine@v0.2.0
+        with:
+          deliverables: ./my-node-app-service/app.yaml
+          project_id: '${{ secrets.QA_ID }}'  # Use dev project ID secret
+          
       - name: Deploy to App Engine (QA)
         if: ${{ github.event.inputs.environment == 'qa' && github.event.inputs.services == 'my-test-portal' }}
         uses: google-github-actions/deploy-appengine@v0.2.0
