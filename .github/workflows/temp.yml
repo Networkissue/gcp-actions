@@ -60,12 +60,26 @@ jobs:
 
       # Run the deploy shell script based on the environment (dev or qa)
       - name: Run deploy shell script for dev environment
-        if: ${{ github.event.inputs.environment == 'dev' }}
+        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'all'}}
         run: |
           cd ./Installer/dev
           ./deploy-dev-portal.sh  # Deploy the dev portal
           ./deploy-dev-service.sh  # Deploy the dev service
+          
+      - name: Run deploy shell script for dev environment
+        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-react-app-portal'}}
+        run: |
+          cd ./Installer/dev
+          ./deploy-dev-portal.sh  # Deploy the dev portal
+          # ./deploy-dev-service.sh  # Deploy the dev service
 
+      - name: Run deploy shell script for dev environment
+        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-node-app-service'}}
+        run: |
+          cd ./Installer/dev
+          # ./deploy-dev-portal.sh  # Deploy the dev portal
+          ./deploy-dev-service.sh  # Deploy the dev service
+          
       - name: Run deploy shell script for qa environment
         if: ${{ github.event.inputs.environment == 'qa' }}
         run: |
