@@ -51,11 +51,11 @@ jobs:
           cd ./my-react-app-portal/
           npm install
 
-      - name: Update version with version change
-        id: versioning
-        run: |
-          cd ./my-node-app-service/
-          ./appdeployerdev.sh
+      # - name: Update version with version change
+      #   id: versioning
+      #   run: |
+      #     cd ./Installer/dev
+      #     ./appdeployerdev.sh
           
 
       # Run the deploy shell script based on the environment (dev or qa)
