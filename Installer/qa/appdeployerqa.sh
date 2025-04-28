@@ -12,7 +12,7 @@ echo Reverting all local changes
 
 echo replace dev instances with qa instances in app.yaml
 
-DEMO_URL="https://my-test-service-dot-test-qa-4321.uc.r.appspot.com/"
+DEMO_URL="https://my-test-service-dot-test-qa-4321.uc.r.appspot.com"
 
 # Check if app.yaml exists
 if [ ! -f app.yaml ]; then 
@@ -74,7 +74,7 @@ cd my-react-app-portal
 echo Reverting all local changes
 # git stash
 
-DEMO_URL="https://my-test-portal-dot-test-qa-4321.uc.r.appspot.com/"
+DEMO_URL="https://my-test-portal-dot-test-qa-4321.uc.r.appspot.com"
 
 echo replace dev instances with qa instances in app.yaml
 if [[ "$OSTYPE" == "darwin"* ]]; then
