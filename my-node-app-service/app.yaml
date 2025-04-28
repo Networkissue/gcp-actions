@@ -4,8 +4,8 @@ service: my-test-service
 service_account: test-dev-4321@test-dev-4321.iam.gserviceaccount.com
 
 env_variables:
-  NODE_SERVICE_LOCAl_APP: "http://localhost:8080"
-  NODE_PORTAL_LOCAL_APP: "http://localhost:5173"
+  # NODE_SERVICE_LOCAl_APP: "http://localhost:8080"
+  # NODE_PORTAL_LOCAL_APP: "http://localhost:5173"
   NODE_SERVICE_DEPLOYED_APP: "https://my-test-service-dot-test-dev-4321.uc.r.appspot.com"
   NODE_SERVICE_QA_DEPLOYED_APP: "https://my-test-service-dot-test-qa-4321.uc.r.appspot.com"
   GCP_SERVICE_ACCOUNT_QA_CONFIG: "test-qa-4321.json"
