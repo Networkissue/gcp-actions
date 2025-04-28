@@ -34,8 +34,8 @@ if [[ $# -eq 0 ]] || [[ $1 == "" ]]; then
 npm install
 npm run build 
 gcloud auth application-default set-quota-project '{{ secrets.DEV_ID }} '
-gcloud config set project '{{ secrets.DEV_ID }} '
-gcloud app deploy --quiet
+# gcloud config set project '{{ secrets.DEV_ID }} '
+# gcloud app deploy --quiet
 
 echo """ """ """ """ """ """ """ """
 
