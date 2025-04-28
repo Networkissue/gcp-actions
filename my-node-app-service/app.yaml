@@ -12,4 +12,3 @@ env_variables:
   GCP_SERVICE_ACCOUNT_DEV_CONFIG: "test-dev-4321.json"
   DEPLOYMENT: "dev"
 
-
