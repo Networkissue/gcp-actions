@@ -51,14 +51,7 @@ jobs:
           cd ./my-react-app-portal/
           npm install
 
-      # - name: Update version with version change
-      #   id: versioning
-      #   run: |
-      #     cd ./Installer/dev
-      #     ./appdeployerdev.sh
-          
-
-      # Run the deploy shell script based on the environment (dev or qa)
+      # Run the deploy shell script based on the environment (dev)
       - name: Run deploy shell script for dev environment
         if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'all'}}
         run: |
@@ -71,35 +64,21 @@ jobs:
         run: |
           cd ./Installer/dev
           ./deploy-dev-portal.sh  # Deploy the dev portal
-          # ./deploy-dev-service.sh  # Deploy the dev service
 
       - name: Run deploy shell script for dev environment
         if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-test-service'}}
         run: |
           cd ./Installer/dev
-          # ./deploy-dev-portal.sh  # Deploy the dev portal
           ./deploy-dev-service.sh  # Deploy the dev service
-          
+
+       # Run the deploy shell script based on the environment (qa)
       - name: Run deploy shell script for qa environment
         if: ${{ github.event.inputs.environment == 'qa' }}
         run: |
-          echo "Before: $(pwd)"
           cd ./Installer/qa
-          echo "After: $(pwd)"
           ./appdeployerqa.sh  # Deploy the qa 
-      # # Authenticate for Dev Environment
-      # - name: Authenticate to Google Cloud (Dev)
-      #   if: ${{ github.event.inputs.environment == 'dev' }}
-      #   uses: google-github-actions/auth@v2
-      #   with:
-      #     project_key: '${{ secrets.DEV_KEY }}'  # Service account key
 
-      # # Authenticate for QA Environment
-      # - name: Authenticate to Google Cloud (QA)
-      #   if: ${{ github.event.inputs.environment == 'qa' }}
-      #   uses: google-github-actions/auth@v2
-      #   with:
-      #     project_key: '${{ secrets.QA_KEY }}'  # Service account key
+      #Authentication
       - name: Authenticate to Google Cloud (Dev)
         if: ${{ github.event.inputs.environment == 'dev' }}
         uses: google-github-actions/auth@v2
@@ -126,13 +105,7 @@ jobs:
           echo "Setting GCP project to test-qa-****"
           gcloud config set project '${{ secrets.QA_ID }}'
 
-      # - name: Deploy to App Engine (Dev)
-      #   if: ${{ github.event.inputs.environment == 'dev' }}
-      #   uses: google-github-actions/deploy-appengine@v0.2.0
-      #   with:
-      #     deliverables: ./my-node-app-service/app.yaml
-      #     project_id: '${{ secrets.DEV_ID }}'  # Use dev project ID secret
-      # Deploy to App Engine (Dev)
+      ### Deploy to App Engine Dev ###
       - name: Deploy to App Engine (Dev - React Portal)
         if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'all' }}
         uses: google-github-actions/deploy-appengine@v0.2.0
@@ -147,7 +120,6 @@ jobs:
           deliverables: ./my-node-app-service/app.yaml
           project_id: '${{ secrets.DEV_ID }}'  # Use dev project ID secret
 
-
       - name: Deploy to App Engine (Dev)
         if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-test-portal' }}
         uses: google-github-actions/deploy-appengine@v0.2.0
@@ -155,7 +127,6 @@ jobs:
           deliverables: ./my-react-app-portal/app.yaml
           project_id: '${{ secrets.DEV_ID }}'  # Use dev project ID secret
 
-      # Deploy to App Engine (Dev)
       - name: Deploy to App Engine (Dev)
         if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-test-service' }}
         uses: google-github-actions/deploy-appengine@v0.2.0
@@ -163,14 +134,7 @@ jobs:
           deliverables: ./my-node-app-service/app.yaml
           project_id: '${{ secrets.DEV_ID }}'  # Use dev project ID secret
 
-      # - name: Deploy to App Engine (QA)
-      #   if: ${{ github.event.inputs.environment == 'qa' }}
-      #   uses: google-github-actions/deploy-appengine@v0.2.0
-      #   with:
-      #     deliverables: ./my-node-app-service/app.yaml
-      #     project_id: '${{ secrets.QA_ID }}'  # Use qa project ID secret
-
-      # Deploy to App Engine (QA)
+      ### qa ###
       - name: Deploy to App Engine (QA - React Portal)
         if: ${{ github.event.inputs.environment == 'qa' && github.event.inputs.services == 'all' }}
         uses: google-github-actions/deploy-appengine@v0.2.0
