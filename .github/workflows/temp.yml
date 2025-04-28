@@ -71,19 +71,30 @@ jobs:
         run: |
           cd ./Installer/qa
           ./appdeployerqa  # Deploy the qa 
-      # Authenticate for Dev Environment
+      # # Authenticate for Dev Environment
+      # - name: Authenticate to Google Cloud (Dev)
+      #   if: ${{ github.event.inputs.environment == 'dev' }}
+      #   uses: google-github-actions/auth@v2
+      #   with:
+      #     project_key: '${{ secrets.DEV_KEY }}'  # Service account key
+
+      # # Authenticate for QA Environment
+      # - name: Authenticate to Google Cloud (QA)
+      #   if: ${{ github.event.inputs.environment == 'qa' }}
+      #   uses: google-github-actions/auth@v2
+      #   with:
+      #     project_key: '${{ secrets.QA_KEY }}'  # Service account key
       - name: Authenticate to Google Cloud (Dev)
         if: ${{ github.event.inputs.environment == 'dev' }}
         uses: google-github-actions/auth@v2
         with:
-          project_key: '${{ secrets.DEV_KEY }}'  # Service account key for test-dev-4321
+          credentials_json: '${{ secrets.dev_key }}'  # Service account key
 
-      # Authenticate for QA Environment
       - name: Authenticate to Google Cloud (QA)
         if: ${{ github.event.inputs.environment == 'qa' }}
         uses: google-github-actions/auth@v2
         with:
-          project_key: '${{ secrets.QA_KEY }}'  # Service account key for test-qa-4321
+          credentials_json: '${{ secrets.qa_key }}'  # Service account key
 
       # Set GCP Project for Dev
       - name: Set GCP Project (Dev)
