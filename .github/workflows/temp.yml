@@ -76,27 +76,27 @@ jobs:
         if: ${{ github.event.inputs.environment == 'dev' }}
         uses: google-github-actions/auth@v2
         with:
-          project_key: '${{ secrets.DEV_KEY }}'  # Service account key for test-dev-4321
+          projectkey: '${{ secrets.DEV_KEY }}'  # Service account key for test-dev-4321
 
       # Authenticate for QA Environment
       - name: Authenticate to Google Cloud (QA)
         if: ${{ github.event.inputs.environment == 'qa' }}
         uses: google-github-actions/auth@v2
         with:
-          project_key: '${{ secrets.QA_KEY }}'  # Service account key for test-qa-4321
+          projectkey: '${{ secrets.QA_KEY }}'  # Service account key for test-qa-4321
 
       # Set GCP Project for Dev
       - name: Set GCP Project (Dev)
         if: ${{ github.event.inputs.environment == 'dev' }}
         run: |
-          echo "Setting GCP project to test-dev-4321"
+          echo "Setting GCP project to test-dev-****"
           gcloud config set project '${{ secrets.DEV_ID }}'
 
       # Set GCP Project for QA
       - name: Set GCP Project (QA)
         if: ${{ github.event.inputs.environment == 'qa' }}
         run: |
-          echo "Setting GCP project to test-qa-4321"
+          echo "Setting GCP project to test-qa-****"
           gcloud config set project '${{ secrets.QA_ID }}'
 
       - name: Deploy to App Engine (Dev)
