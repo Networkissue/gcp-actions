@@ -67,14 +67,14 @@ jobs:
           ./deploy-dev-service.sh  # Deploy the dev service
           
       - name: Run deploy shell script for dev environment
-        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-react-app-portal'}}
+        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-test-portal'}}
         run: |
           cd ./Installer/dev
           ./deploy-dev-portal.sh  # Deploy the dev portal
           # ./deploy-dev-service.sh  # Deploy the dev service
 
       - name: Run deploy shell script for dev environment
-        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-node-app-service'}}
+        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-test-service'}}
         run: |
           cd ./Installer/dev
           # ./deploy-dev-portal.sh  # Deploy the dev portal
@@ -133,7 +133,7 @@ jobs:
       
       # Deploy to App Engine (Dev)
       - name: Deploy to App Engine (Dev)
-        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-react-app-portal' }}
+        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-test-portal' }}
         uses: google-github-actions/deploy-appengine@v0.2.0
         with:
           deliverables: ./my-react-app-portal/app.yaml
@@ -141,7 +141,7 @@ jobs:
 
       # Deploy to App Engine (Dev)
       - name: Deploy to App Engine (Dev)
-        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-node-app-service' }}
+        if: ${{ github.event.inputs.environment == 'dev' && github.event.inputs.services == 'my-test-service' }}
         uses: google-github-actions/deploy-appengine@v0.2.0
         with:
           deliverables: ./my-node-app-service/app.yaml
@@ -156,7 +156,7 @@ jobs:
 
       # Deploy to App Engine (QA)
       - name: Deploy to App Engine (QA)
-        if: ${{ github.event.inputs.environment == 'qa' && github.event.inputs.services == 'my-react-app-portal' }}
+        if: ${{ github.event.inputs.environment == 'qa' && github.event.inputs.services == 'my-test-portal' }}
         uses: google-github-actions/deploy-appengine@v0.2.0
         with:
           deliverables: ./my-react-app-portal/app.yaml
@@ -164,7 +164,7 @@ jobs:
 
       # Deploy to App Engine (QA)
       - name: Deploy to App Engine (QA)
-        if: ${{ github.event.inputs.environment == 'qa' && github.event.inputs.services == 'my-node-app-service' }}
+        if: ${{ github.event.inputs.environment == 'qa' && github.event.inputs.services == 'my-test-service' }}
         uses: google-github-actions/deploy-appengine@v0.2.0
         with:
           deliverables: ./my-node-app-service/app.yaml
