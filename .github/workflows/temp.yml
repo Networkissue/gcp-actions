@@ -86,7 +86,7 @@ jobs:
           echo "Before: $(pwd)"
           cd ./Installer/qa
           echo "After: $(pwd)"
-          ./appdeployerqa  # Deploy the qa 
+          ./appdeployerqa.sh  # Deploy the qa 
       # # Authenticate for Dev Environment
       # - name: Authenticate to Google Cloud (Dev)
       #   if: ${{ github.event.inputs.environment == 'dev' }}
