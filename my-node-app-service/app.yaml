@@ -1,7 +1,7 @@
 runtime: nodejs20
 service: my-test-service
 
-service_account: test-dev-4321@test-qa-4321.iam.gserviceaccount.com
+service_account: test-dev-4321@test-dev-4321.iam.gserviceaccount.com
 
 env_variables:
   NODE_SERVICE_LOCAl_APP: "http://localhost:8080"
