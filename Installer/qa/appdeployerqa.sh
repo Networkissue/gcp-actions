@@ -79,8 +79,8 @@ echo install npm packages
 npm install
 echo prepare build
 npm run build 
-echo set cloud account
-gcloud config set project test-qa-4321
+# echo set cloud account
+# gcloud config set project test-qa-4321
 # echo deploy portal to appengine
 # gcloud app deploy --quiet
 # echo deploy portal to appengine is done
