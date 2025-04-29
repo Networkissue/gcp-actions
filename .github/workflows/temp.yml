@@ -28,7 +28,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Networkissue/gcp-actions.git
+          # git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Networkissue/gcp-actions.git
 
 
       - name: Pull latest from origin/main and merge into dev
@@ -167,9 +167,9 @@ jobs:
           project_id: '${{ secrets.QA_ID }}'  # Use qa project ID secret
 
 
-      - name: Pushing to origin
-        run: |
-            git checkout dev || true
-            git add .
-            git commit -m "Modified all files and pushed to rep..."
-            git push origin dev
+      # - name: Pushing to origin
+      #   run: |
+      #       git checkout dev || true
+      #       git add .
+      #       git commit -m "Modified all files and pushed to rep..."
+      #       git push origin dev
