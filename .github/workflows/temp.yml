@@ -165,11 +165,3 @@ jobs:
         with:
           deliverables: ./my-node-app-service/app.yaml
           project_id: '${{ secrets.QA_ID }}'  # Use qa project ID secret
-
-
-      # - name: Pushing to origin
-      #   run: |
-      #       git checkout dev || true
-      #       git add .
-      #       git commit -m "Modified all files and pushed to rep..."
-      #       git push origin dev
