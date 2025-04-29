@@ -28,6 +28,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Networkissue/gcp-actions.git
+
 
       - name: Pull latest from origin/main and merge into dev
         run: |
