@@ -19,16 +19,6 @@ if [ ! -f app.yaml ]; then
     echo "app.yaml not found"
     exit 1
 else 
-    # # Check the operating system and adjust sed syntax accordingly
-    # if [[ "$OSTYPE" == "darwin"* ]]; then
-    #     # macOS (uses -i '')
-    #     sed -i '' '/service_account: test-dev-4321@test-dev-4321.iam.gserviceaccount.com/s/.*/service_account: test-qa-4321@test-qa-4321.iam.gserviceaccount.com/' app.yaml
-    #     sed -i '' '/  DEPLOYMENT: "dev"/s/.*/  DEPLOYMENT: "qa"/' environments.js
-    # else
-    #     # Linux (uses -i without '')
-    #     sed -i '/service_account: test-dev-4321@test-dev-4321.iam.gserviceaccount.com/s/.*/service_account: test-qa-4321@test-qa-4321.iam.gserviceaccount.com/' app.yaml
-    #     sed -i '/  DEPLOYMENT: "dev"/s/.*/  DEPLOYMENT: "qa"/' environments.js
-    # fi
     echo """replace dev instances with qa instances in app.yaml"""
     if [[ "$OSTYPE" == "darwin"* ]]; then
         sed -i '' 's/^service_account: .*/service_account: test-qa-4321@test-qa-4321.iam.gserviceaccount.com/' app.yaml
